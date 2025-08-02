@@ -12,6 +12,13 @@ mlops-california-housing/
 ├── Dockerfile # Docker setup
 ├── README.md # Project overview
 
+## Model Comparison Table
+
+| Model Stage               |    File Name                | Size  | R² Score | MSE     |
+|---------------------------|-----------------------------|-------|----------|---------|
+| Original Model            |   `linear_model.joblib`     | 872 B | 0.6053   | 0.534   |
+| Quantized (uint8)         |   `quant_params.joblib`     | 452 B | 0.575    | 7.5559  |
+
 
 
 ## Tasks Completed
@@ -21,6 +28,9 @@ mlops-california-housing/
 - [ ] Quantization (manual)
 - [ ] Docker containerization
 - [ ] CI/CD via GitHub Actions
+
+
+
 
 ## Dataset
 
