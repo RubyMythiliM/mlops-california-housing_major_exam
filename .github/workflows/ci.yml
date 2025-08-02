@@ -23,7 +23,7 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest tests/
+          PYTHONPATH=. pytest tests/
 
   train-and-quantize:
     runs-on: ubuntu-latest
