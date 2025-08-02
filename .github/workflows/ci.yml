@@ -67,3 +67,4 @@ jobs:
       - name: Run Predict Script
         run: docker run --rm mlops-lr-app
 
+
