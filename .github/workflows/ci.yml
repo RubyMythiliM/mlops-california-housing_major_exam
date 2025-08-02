@@ -21,9 +21,9 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Run basic unit tests (skip model check)
+      - name: Run tests
         run: |
-          PYTHONPATH=. pytest tests/test_train.py -k "not test_model_file_exists"
+          PYTHONPATH=. pytest tests/
 
   train-model:
     runs-on: ubuntu-latest
@@ -49,7 +49,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: model-artifacts
-          path: src/model.joblib
+          path: model.joblib
 
   integration-tests:
     runs-on: ubuntu-latest
@@ -71,11 +71,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: model-artifacts
-          path: src
 
       - name: Run model file check
         run: |
-          PYTHONPATH=. pytest tests/test_train.py -k "test_model_file_exists"
+          ls -la
+          test -f model.joblib
 
   build-container:
     runs-on: ubuntu-latest
