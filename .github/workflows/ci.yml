@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  test-suite:
+  unit-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -21,13 +21,13 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Run tests
+      - name: Run basic unit tests (skip model check)
         run: |
-          PYTHONPATH=. pytest tests/
+          PYTHONPATH=. pytest tests/test_train.py -k "not test_model_file_exists"
 
-  train-and-quantize:
+  train-model:
     runs-on: ubuntu-latest
-    needs: test-suite
+    needs: unit-tests
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -41,21 +41,45 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Run training and quantization
+      - name: Run Training
         run: |
           python src/train.py
-          python src/quantize.py
 
-      - name: Upload artifacts
+      - name: Upload Trained Model
         uses: actions/upload-artifact@v4
         with:
           name: model-artifacts
-          path: |
-            artifacts/
+          path: src/model.joblib
 
-  build-and-test-container:
+  integration-tests:
     runs-on: ubuntu-latest
-    needs: train-and-quantize
+    needs: train-model
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Download Trained Model
+        uses: actions/download-artifact@v4
+        with:
+          name: model-artifacts
+          path: src
+
+      - name: Run model file check
+        run: |
+          PYTHONPATH=. pytest tests/test_train.py -k "test_model_file_exists"
+
+  build-container:
+    runs-on: ubuntu-latest
+    needs: integration-tests
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
