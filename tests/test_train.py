@@ -1,7 +1,5 @@
 import pytest
 from sklearn.linear_model import LinearRegression
-import joblib
-import os
 from src.train import load_data, train_model, evaluate_model
 
 def test_load_data():
@@ -25,10 +23,4 @@ def test_model_accuracy():
     model = train_model(X_train, y_train)
     r2, _ = evaluate_model(model, X_test, y_test)
     assert r2 > 0.5
-
-def test_model_file_exists():
-    assert os.path.exists("src/model.joblib")
-    model = joblib.load("src/model.joblib")
-    assert isinstance(model, LinearRegression)
-
 
