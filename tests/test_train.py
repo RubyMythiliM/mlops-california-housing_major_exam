@@ -31,3 +31,4 @@ def test_model_file_exists():
     model = joblib.load("src/model.joblib")
     assert isinstance(model, LinearRegression)
 
+
